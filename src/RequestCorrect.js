@@ -254,7 +254,7 @@ function RequestCorrect () {
 				item: (v) => {return isIntVal(v)},
 				price: (v) => {return isIntValOrEmpty(v)},
 				buy_out: (v) => {return isIntValOrEmpty(v)},
-				time: (v) => {return isIntVal(v)},
+				time: (v) => {return isIntValOrEmpty(v)},
 				is_featured: (v) => {return isIntVal(v)},
 				// answer1901001: (v) => {return isIntVal(v)},
 				// answer1905001: (v) => {return isIntVal(v)},
