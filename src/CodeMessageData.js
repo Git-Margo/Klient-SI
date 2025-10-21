@@ -281,6 +281,7 @@ function _CodeMessageData () {
         101101004: {[NAME]: 'ChangeEnhancementRefundConfirmation.RemoveByUnbind'},
         101201001: {[NAME]: 'AddTabDepositConfirmation'},
         101301001: {[NAME]: 'TargetClassError', [VIEW_PARAMS]: {[MESSAGE] : ALERT}},
+        101401001: {[NAME]: 'TargetMinMaxLevelError', [VIEW_PARAMS]: {[MESSAGE]: YELLOW_MESSAGE}},
 
         4801001: {[NAME]: 'ArtisanshipItemIsModifiedConfirmation'},
 

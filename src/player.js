@@ -643,13 +643,24 @@ function player() {
             .css('backgroundPosition',this.pvp?'-200px 0px':'-200px -27px');
     };
 
+  const checkCanCallCenterMapOnHero = () => {
+    if (getEngine().startFightBlockade.checkBlockade()) {
+      return true
+    }
+
+    return !getEngine().lock.check();
+  }
+
     this.centerViewOnMe=function(){
         this.run();
         var lx=Math.round(this.rx*32+16-this.fw/2);
         var ly=Math.round(this.ry*32+32-this.fh);
         var wpos=Math.round(this.rx)+Math.round(this.ry)*256, wat=0;
         if(isset(map.water[wpos])) wat=map.water[wpos];
-        map.center(lx,ly);
+
+        if (checkCanCallCenterMapOnHero()) {
+          map.center(lx, ly);
+        }
     };
 
     this.run=function() {
@@ -689,7 +700,12 @@ function player() {
                 updateCharacterAuraPos(this.rx, this.ry, $heroChampionMatchmaking);
             }
 
-            if (!g.lock.check()) map.center(lx,ly);
+            // if (!g.lock.check()) map.center(lx,ly);
+            if (!g.lock.check()) {
+              if (checkCanCallCenterMapOnHero()) {
+                map.center(lx, ly);
+              }
+            }
             $('#botloc').text(this.x+','+this.y);
         } else if(hero.isMoving < 4) {
             hero.isMoving++;

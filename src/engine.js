@@ -1415,6 +1415,8 @@ function parseInput(d, callback, xhr){
     if(isset(d['tutorial'])){__tutorials.val=d['tutorial'];__tutorials.runQueue();}
     if(isset(d['h'])) hero._u(d['h'], d);
 
+    if(isset(d['walking'])) getEngine().startFightBlockade.updateData(d['walking']);
+
     if(isset(d['progressbar'])) progressbar.update(d['progressbar']);
     else progressbar.hide();
     if(isset(d['pet'])) hero.updatePet(d['pet']);
@@ -3754,8 +3756,9 @@ function clDisband() {
     else _g('clan&a=disband&agree='+$('#cl_disband').val());
 }
 function clLeave() {
-    _g('clan&a=leave&agree='+$('#cl_leave').val(), function(e) {
-        if (isset(e.msg)) {
+  const v = $('#cl_leave').val();
+    _g('clan&a=leave&agree=' + v, function(e) {
+        if (v === 'OK') {
             $('.clan').css('display', 'none');
             $('#clanmenu>.boxhover>li.to-disable').addClass('disabled');
             delete hero.clan;
@@ -4608,8 +4611,8 @@ function depoShow(d, clanDepo)
 
         $payButtons.html('');
         const buttonOptions = [
-            { text: _t('pay_tears %val%', {'%val%': d.cost_prolong.credits }, 'depo'), classes: ['small', 'green'], action: () => depoPay('s') },
-            { text: _t('pay_gold %val%', {'%val%': round(d.cost_prolong.gold) }, 'depo'), classes: ['small', 'green'], action: () => depoPay('z') },
+            { text: _t('pay_tears %val%', {'%val%': d.cost_prolong.credits }, 'depo'), classes: ['small', 'green'], action: () => depoPay('credits') },
+            { text: _t('pay_gold %val%', {'%val%': round(d.cost_prolong.gold) }, 'depo'), classes: ['small', 'green'], action: () => depoPay('gold') },
         ];
         for (const options of buttonOptions) {
             const button = new Button(options).getButton();
@@ -4998,9 +5001,9 @@ function deposit(e)
 }
 function depoPay(c)
 {
-    if(c=='z' && getHeroLevel()<75) mAlert(_t('low_lvl_to_paygold', null, 'depo')); //'Masz zbyt niski poziom, by opÅaciÄ depozyt zÅotem!'
+    if(c=='gold' && getHeroLevel()<75) mAlert(_t('low_lvl_to_paygold', null, 'depo')); //'Masz zbyt niski poziom, by opÅaciÄ depozyt zÅotem!'
     else
-    if(c=='s' && getHeroLevel()<20) mAlert(_t('low_lvl_to_usedepo', null, 'depo')); else //'Masz zbyt niski poziom, by korzystaÄ z depozytu.'
+    if(c=='credits' && getHeroLevel()<20) mAlert(_t('low_lvl_to_usedepo', null, 'depo')); else //'Masz zbyt niski poziom, by korzystaÄ z depozytu.'
         _g('depo&pay='+c+'&time=1');
 }
 function findEmptyBagPlace(){
@@ -8071,6 +8074,11 @@ function initNpcTplManager () {
     g.npcTplManager.init();
 }
 
+function initStartFightBlockade () {
+  g.startFightBlockade = new StartFightBlockade();
+  g.startFightBlockade.init();
+}
+
 function initCodeMessageController () {
     g.codeMessageManager = new CodeMessageManager();
     g.codeMessageManager.init();
@@ -8901,6 +8909,7 @@ tutorialStart(0);
 //if(_l()=='pl') __skins.load('halloween');
 $(document).ready(function(){
     //if(_l() != 'pl') $('#premiumshop .buymore_ps').hide();
+    initStartFightBlockade();
     initCodeMessageController();
     initTplsManager();
     initNpcIconManager();
