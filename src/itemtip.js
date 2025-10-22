@@ -289,6 +289,9 @@ function addUnit (unit) {
 }
 
 function itemTip(i, nosafe){
+
+  return MargoTipsParser.getTip(i);
+
   var htmlspecialchars = window.htmlspecialchars;
   if(!nosafe)
     htmlspecialchars = function(val) {return val;};

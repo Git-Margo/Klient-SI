@@ -8202,7 +8202,8 @@ var codeManager = new (function(){
                 var $o = $('<div class=item_group id=item_group_'+i+'></div>');
                 for(var k in items[i]){
                     let item = items[i][k];
-                    let $i = $('<div class=item id="item'+item.id+'" ctip=t_item tip=\''+item.tip+'\'></div>');
+                    // let $i = $('<div class=item id="item'+item.id+'" ctip=t_item tip=\''+item.tip+'\'></div>');
+                    let $i = $('<div class=item id="item'+item.id+'" data-type="t_item" ctip="tip-wrapper normal-tip" tip=\''+item.tip+'\'></div>');
                     $i.css({
                         top:item.y%3*33+1,
                         left:item.x*33+1

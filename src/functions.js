@@ -2084,7 +2084,8 @@ window.debounce = function(callback, wait, immediate = false) {
 };
 
 window.createItem = (i, tip = i.tip) => {
-  return $(`<div class="item" id="item${i.id}" ctip="t_item"></div>`).attr('tip', tip);
+  // return $(`<div class="item" id="item${i.id}" ctip="t_item"></div>`).attr('tip', tip);
+  return $(`<div class="item" data-type="t_item" id="item${i.id}" ctip="tip-wrapper normal-tip"></div>`).attr('tip', tip);
 }
 
 window.removeSpaces = (s) => {
@@ -2384,4 +2385,8 @@ window.setTipWhenNameToLong = function ($el, tip) {
 window.isTestWorld = () => {
   const testWorlds = ['dev', 'tabaluga', 'experimental'];
   return testWorlds.includes(g.worldConfig.getWorldName());
+}
+
+function getCurrencyIcon(val) {
+  return '';
 }

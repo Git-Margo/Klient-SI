@@ -231,7 +231,8 @@ function MatchManager () {
 		var $img = $('<img>');
 		$item.attr({
 			'tip' : itemTip(data),
-			'ctip': 't_item'
+			// 'ctip': 't_item'
+			'ctip': 'tip-wrapper normal-tip'
 		});
 		$img.attr('src', CFG.ipath + data.icon);
 		$item.append($img);

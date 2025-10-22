@@ -120,6 +120,15 @@ var Tip = {
 
       var cfg = $.extend({}, T.types._default, T.types[type]);
       var cl = $(this).attr('ctip') && cfg['classOverride'] == null ? $(this).attr('ctip') : cfg['classOverride'];
+
+
+
+      if ($(this).attr('data-type')) {
+        T.tip.attr('data-type', $(this).attr('data-type'))
+      } else {
+        T.tip.removeAttr('data-type')
+      }
+
       if (e.type == 'mouseover'){
 				T.tip.stop(true, true);
         T.update($(this).attr('tip'));
@@ -228,7 +237,7 @@ var Tip = {
    */
   initHtml:function(){
     var T = this;
-    T.tip = $(document.createElement('div')).attr('id', 'tip').append('<div id=tip-o1></div><div id=tip-o2></div><div class="tipInnerContainer"></div>');
+    T.tip = $(document.createElement('div')).attr('id', 'tip').append('<div id=tip-o1></div><div id=tip-o2></div><div class="tipInnerContainer content"></div>');
     T.tipContentHandler = T.tip.find('.tipInnerContainer');
     $('body').append(T.tip);
   },
