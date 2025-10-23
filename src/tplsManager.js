@@ -215,7 +215,7 @@ function tplsManager() {
 	// 	return obj;
 	// };
 
-	this.changeItemAmount = function (item, $item, serverAmount) {
+	this.changeItemAmount = function (item, $item, serverAmount, options = { refreshPrice: false, recalcPrice: false }) {
 		var newVal;
 		var $cloneAmount = $item.find('small');
 		var stat = parseItemStat(item.stat);
@@ -226,7 +226,11 @@ function tplsManager() {
 			if (isset(stat['amount'])) v = stat['amount'];
 			newVal = parseInt(v) * serverAmount;
 			$cloneAmount.html(newVal);
-			self.changeAMountInTip(stat, $item, newVal);
+      // self.changeAMountInTip(stat, $item, newVal);
+      if (serverAmount == 1) {
+        return;
+      }
+      changeAmountInTip(item, $item, newVal, { refreshPrice: options.refreshPrice, recalcPrice: options.recalcPrice, serverAmount });
 
 		} else {
 			if (serverAmount == 1) return;
@@ -234,7 +238,8 @@ function tplsManager() {
 			newVal = serverAmount;
 			$newAmount.html(newVal);
 			$item.append($newAmount);
-			self.changeAMountInTip(stat, $item, newVal);
+      // self.changeAMountInTip(stat, $item, newVal);
+      changeAmountInTip(item, $item, newVal, { refreshPrice: options.refreshPrice, recalcPrice: options.recalcPrice, serverAmount });
 		}
 	};
 
@@ -277,6 +282,68 @@ function tplsManager() {
 
 		$item.tip(str);
 	};
+
+  const changeAmountInTip = function (item, $item, newVal, { recalcPrice = false, refreshPrice = false, serverAmount }) {
+    newVal = formNumberToNumbersGroup(newVal);
+    // var tip = $item.getTipData();
+    const tip = getTipContent(item);
+    var $tip = $('<div>').append(tip);
+
+    $tip.find('.amount').remove();
+    $tip.find('.item').append($('<div>').html(newVal).addClass('amount'));
+
+    if (recalcPrice || refreshPrice) {
+      let newPrice;
+      if (refreshPrice) newPrice = item.pr * 1;
+      if (recalcPrice) newPrice = item.pr * serverAmount;
+      $tip.find('.value-item .val').text(round(newPrice, (newPrice < 10000 ? 10 : 2)));
+    }
+
+    var $amountText = $tip.find('.amount-text');
+
+    if ($amountText.length > 0) $amountText.html(newVal);
+    else {
+      // var cursedFlag = isset(item._cachedStats.cursed);
+      var cursedFlag = isset(stat['cursed']);
+      // var cursedFlag = item.issetCursedStat();
+      //var valAndTag = '<span class="amount-text">' + newVal + '</span>';
+
+      var strTab = [
+        _t('cursed_amount %val%', {'%val%':''}),
+        _t('amount %val% %split%', {'%val%':'','%split%':''})
+      ];
+      var amountStr = strTab[cursedFlag ? 0 : 1];
+      var $section = $tip.siblings('.s-4');
+      var $wrapper = $('<span>').html(amountStr);
+      var dmgWrapper = $('<span>').addClass('damage');
+      $amountText = $('<span>').html(newVal).addClass('amount-text');
+      dmgWrapper.append($amountText);
+      $wrapper.append(dmgWrapper);
+
+
+      if ($section.length > 0) $section.append($wrapper);
+      else {
+        $section = $('<div>').addClass('item-tip-section s-4');
+        $section.append($wrapper);
+        const allSections = $tip.children();
+        allSections.push($section[0]);
+        allSections.sort((a, b) => {
+          const nA = $(a).attr('class').toLowerCase();
+          const nB = $(b).attr('class').toLowerCase();
+          return (nA < nB) ? -1 : (nA > nB) ? 1 : 0;
+        });
+        $tip = $('<div>').html(allSections);
+      }
+    }
+
+    // item.setTip($item, $tip[0].innerHTML, {forceNewId:true});
+
+    $item.tip($tip[0].innerHTML);
+  };
+
+  const getTipContent = (item, cmpStats = null) => {
+    return MargoTipsParser.getTip(item);
+  }
 
 	this.onClear = function () {
 		//TODO: remove ground items
